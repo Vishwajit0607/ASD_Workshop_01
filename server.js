@@ -1,143 +1,15 @@
+const express = require("express");
 
-// const express = require('express');
-// const app = express()
-// const fs = require('fs/promises')
-// const path = require('path')
-// const PathToFile = path.join(__dirname,"db.json")
-// const port = 3000
-// async function readFile(){
-//     try{
-//         let data = await fs.readFile(PathToFile,"utf-8")
-//         return JSON.parse(data)
-//     }catch(error){
-//         console.log(error)
-//     }
-    
-// }
+const productRoutes = require("./routes/productRoutes");
 
-// app.get('/products',async (req, res) => {
-//     let product = await readFile()
-//   res.send(product)
-// })
-// app.listen(port, () => {
-//   console.log(`Example app listening on port ${port}`)
-// })
+const app = express();
 
+const PORT = 3000;
 
-// const express = require('express');
-// const app = express()
-// const fs = require('fs/promises')
-// const path = require('path')
-// const PathToFile = path.join(__dirname, "db.json")
-// const port = 3000
-// async function readFile(){
-//     try{
-//         let data = await fs.readFile(PathToFile, "utf-8")
-//         return JSON.parse(data)
-//     }catch(err){
-//         console.log(err)
-//     }
-// }
-// async function readFileWithDelay(){
-//     try{
-//         await new Promise((res, rej) => {
-//             setTimeout(res, 1500)
-//         })
+app.use(express.json());
 
-//         return await readFile()
+app.use(productRoutes);
 
-//     }catch(err){
-//         console.log(err)
-//     }
-// }
-// app.get('/products/:id', async (req, res) => {
-//     try{
-//         let id = req.params.id
-//         id = Number(id)
-
-//         let products = await readFileWithDelay()
-
-//         let product = products.find((item) => item.id == id)
-
-//         res.send(product)
-
-//     }catch(err){
-//         res.status(500).send("server error")
-//     }
-// })
-// app.listen(port, () => {
-//     console.log(`Example app listening on port ${port}`)
-// })
-
-
-const express = require('express');
-const app = express()
-const fs = require('fs/promises')
-const path = require('path')
-const cache = {}
-const PathToFile = path.join(__dirname, "db.json")
-const port = 3000
-
-async function readFile() {
-    try {
-        let data = await fs.readFile(PathToFile, "utf-8")
-        return JSON.parse(data)
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-async function readFileWithDelay() {
-    try {
-        await new Promise((res, rej) => {
-            setTimeout(res, 1500)
-        })
-
-        return await readFile()
-
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-app.get("/products", async (req, res) => {
-    try {
-        let key = req.url
-        let value = cache[key]
-
-        if (value) {
-            res.set("X-Cache", "HIT")
-            return res.json(value)
-        }
-
-        let products = await readFileWithDelay()
-
-        cache[key] = products
-
-        return res.json(products)
-
-    } catch (err) {
-        res.status(500).send("Server Error")
-    }
-})
-
-app.get('/products/:id', async (req, res) => {
-    try {
-        let id = req.params.id
-        id = Number(id)
-
-        let products = await readFileWithDelay()
-
-        let product = products.find((item) => item.id == id)
-
-        res.send(product)
-
-    } catch (err) {
-        res.status(500).send("server error")
-    }
-})
-
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
-
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
